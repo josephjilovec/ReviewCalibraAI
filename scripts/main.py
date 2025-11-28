@@ -33,29 +33,40 @@ def run_demo() -> None:
     print("-" * 90)
 
     total_score = 0.0
+    total_assignments = 0
     loads = []
 
     for paper_id, assignment in assignments.items():
         paper = submissions[paper_id]
-        reviewer = reviewers[assignment["reviewer_id"]]
-        score = assignment["score"]
-        new_load = reviewer["current_load"] + 1
+        assigned_list = assignment["assigned"]
 
-        print(
-            f"{paper_id:<10} "
-            f"{paper['title'][:38]:<40} "
-            f"{reviewer['name']:<20} "
-            f"{score:.3f}    "
-            f"{new_load}/{reviewer['max_load']}"
-        )
+        if not assigned_list:
+            print(f"{paper_id:<10} {paper['title'][:38]:<40} {'(no suitable reviewer)':<20} {'—':<10} {'—':<10}")
+            continue
 
-        total_score += score
-        loads.append(new_load)
+        for rev in assigned_list:
+            reviewer = reviewers[rev["reviewer_id"]]
+            score = rev["score"]
+            new_load = reviewer["current_load"] + loads.count(rev["reviewer_id"]) + 1
+
+            print(
+                f"{paper_id:<10} "
+                f"{paper['title'][:38]:<40} "
+                f"{reviewer['name']:<20} "
+                f"{score:.3f}     "
+                f"{new_load}/{reviewer['max_load']}"
+            )
+
+            total_score += score
+            total_assignments += 1
+            loads.append(rev["reviewer_id"])
 
     print("-" * 90)
-    print(f"Average expertise score : {total_score / len(assignments):.3f}")
-    print(f"Load std deviation      : {pd.Series(loads).std():.2f}")
-    print(f"Total assignments       : {len(assignments)}")
+    if total_assignments > 0:
+        print(f"Average expertise score : {total_score / total_assignments:.3f}")
+        print(f"Load std deviation      : {pd.Series([loads.count(r) for r in set(loads)]).std():.2f}")
+    print(f"Total assigned reviews   : {total_assignments}")
+    print(f"Papers covered           : {len([a for a in assignments.values() if a['assigned']])} / {len(assignments)}")
 
 
 def main() -> None:
