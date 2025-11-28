@@ -10,9 +10,8 @@ Core functions for ReviewCalibraAI:
 from __future__ import annotations
 
 import json
-from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Any, Dict, Tuple
 
 import numpy as np
 import pandas as pd
@@ -45,21 +44,19 @@ def compute_affinity_scores(
     """
     Compute expertise overlap score between every reviewer and every paper.
     Simple Jaccard similarity on keyword sets (case-insensitive).
-    Returns a DataFrame for fast lookup: rows = reviewers, columns = papers.
+    Returns a DataFrame: rows = reviewers, columns = papers.
     """
     reviewer_ids = list(reviewers.keys())
     paper_ids = list(submissions.keys())
 
-    scores = pd.DataFrame(
-        0.0, index=reviewer_ids, columns=paper_ids, dtype=float
-    )
+    scores = pd.DataFrame(0.0, index=reviewer_ids, columns=paper_ids, dtype=float)
 
     for r_id in reviewer_ids:
-        r_keywords = set(reviewers[r_id]["expertise"])
+        r_keywords = {k.lower() for k in reviewers[r_id]["expertise"]}
         r_conflicts = set(reviewers[r_id].get("conflicts", []))
 
         for p_id in paper_ids:
-            p_keywords = set(submissions[p_id]["keywords"])
+            p_keywords = {k.lower() for k in submissions[p_id]["keywords"]}
             p_authors = set(submissions[p_id].get("author_emails", []))
 
             # Conflict of interest → score = -inf
@@ -88,41 +85,37 @@ def assign_reviewers(
     affinity = compute_affinity_scores(reviewers, submissions)
     assignments: Dict[str, Dict[str, Any]] = {}
 
-    # Sort papers arbitrarily (can be randomized or by submission time)
     paper_ids = list(submissions.keys())
 
-    # Track current load for each reviewer
     load = {r_id: r["current_load"] for r_id, r in reviewers.items()}
     max_load = {r_id: r["max_load"] for r_id, r in reviewers.items()}
 
     for paper_id in paper_ids:
         candidates = affinity[paper_id].copy()
 
-        # Remove reviewers who have reached max load
+        # Block reviewers who have reached max load
         for r_id in load:
             if load[r_id] >= max_load[r_id]:
                 candidates[r_id] = -float("inf")
 
-        # Iteratively pick the best available reviewer
         assigned_reviewers = []
         for _ in range(reviews_per_paper):
             if candidates.max() <= -float("inf"):
-                break  # no more valid reviewers
+                break
 
             best_reviewer = candidates.idxmax()
             score = float(candidates[best_reviewer])
 
-            assigned_reviewers.append(
-                {"reviewer_id": best_reviewer, "score": score}
-            )
+            assigned_reviewers.append({"reviewer_id": best_reviewer, "score": score})
 
-            # Update load and block this reviewer from being picked again for this paper
+            # Update load and discourage this reviewer for future papers
             load[best_reviewer] += 1
             candidates[best_reviewer] = -float("inf")
+            affinity.loc[best_reviewer] *= 0.95  # slight global penalty
 
-            # Also reduce score for this reviewer globally to encourage balance
-            affinity.loc[best_reviewer] *= 0.95  # slight penalty after each assignment
-
-        # Store the top-k assignment for this paper
         assignments[paper_id] = {
-            "assigned
+            "assigned": assigned_reviewers,
+            "num_assigned": len(assigned_reviewers),
+        }
+
+    return assignments
