@@ -5,12 +5,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="reviewcalibraai",
-    version="0.1.0",
-    author="Your Name",
+    version="0.1.1",                    # bumped so pip notices the change
+    author="Joseph Jilovec",
     description="Transparent reviewer-to-paper matching for conference peer review",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=find_packages(where="."),   # ← critical fix
+    package_dir={"": "."},               # ← tells it the packages are in the root
     include_package_data=True,
     install_requires=[
         "pandas>=2.0.0",
