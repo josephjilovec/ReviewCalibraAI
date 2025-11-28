@@ -1,0 +1,50 @@
+[
+  {
+    "id": "r1",
+    "name": "Dr. Ada Lovelace",
+    "expertise": ["generative models", "diffusion", "vision", "multimodal"],
+    "max_load": 8,
+    "current_load": 0,
+    "conflicts": ["charles.babbage@cam.ac.uk"]
+  },
+  {
+    "id": "r2",
+    "name": "Prof. Yann LeCun",
+    "expertise": ["convolutional networks", "vision", "self-supervised learning"],
+    "max_load": 7,
+    "current_load": 0,
+    "conflicts": []
+  },
+  {
+    "id": "r3",
+    "name": "Dr. Fei-Fei Li",
+    "expertise": ["vision", "datasets", "multimodal", "ethics"],
+    "max_load": 8,
+    "current_load": 0,
+    "conflicts": []
+  },
+  {
+    "id": "r4",
+    "name": "Prof. Yoshua Bengio",
+    "expertise": ["deep learning", "generative models", "theory", "safety"],
+    "max_load": 6,
+    "current_load": 0,
+    "conflicts": []
+  },
+  {
+    "id": "r5",
+    "name": "Dr. Anca Dragan",
+    "expertise": ["reinforcement learning", "human-ai", "robotics", "safety"],
+    "max_load": 7,
+    "current_load": 0,
+    "conflicts": []
+  },
+  {
+    "id": "r6",
+    "name": "Prof. Chris Ré",
+    "expertise": ["ml systems", "data management", "weak supervision"],
+    "max_load": 9,
+    "current_load": 0,
+    "conflicts": []
+  }
+]
