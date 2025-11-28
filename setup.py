@@ -16,6 +16,9 @@ setup(
         "pandas>=2.0.0",
         "numpy>=1.24.0",
     ],
+    extras_require={
+        "test": ["pytest>=7.0", "pytest-cov"],
+    },
     entry_points={
         "console_scripts": [
             "reviewcalibraai = scripts.main:main",
