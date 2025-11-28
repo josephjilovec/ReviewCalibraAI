@@ -1,0 +1,38 @@
+[
+  {
+    "id": "p01",
+    "title": "Scaling Laws for Diffusion Models in 2026",
+    "keywords": ["diffusion", "generative models", "scaling", "vision"],
+    "author_emails": ["researcher1@stanford.edu"]
+  },
+  {
+    "id": "p02",
+    "title": "Self-Supervised Vision Transformers Without Labels",
+    "keywords": ["self-supervised learning", "vision", "transformers"],
+    "author_emails": ["student@nyu.edu"]
+  },
+  {
+    "id": "p03",
+    "title": "Aligning Multimodal Foundation Models with Human Values",
+    "keywords": ["multimodal", "ethics", "alignment", "safety"],
+    "author_emails": ["postdoc@berkeley.edu"]
+  },
+  {
+    "id": "p04",
+    "title": "Efficient Weak Supervision at Scale",
+    "keywords": ["weak supervision", "ml systems", "data management"],
+    "author_emails": ["charles.babbage@cam.ac.uk"]
+  },
+  {
+    "id": "p05",
+    "title": "Inverse Reinforcement Learning from Human Demonstrations 2.0",
+    "keywords": ["reinforcement learning", "human-ai", "robotics"],
+    "author_emails": ["phd@mit.edu"]
+  },
+  {
+    "id": "p06",
+    "title": "Theoretical Analysis of Overparameterized Neural Networks",
+    "keywords": ["theory", "deep learning", "optimization"],
+    "author_emails": ["theory@princeton.edu"]
+  }
+]
